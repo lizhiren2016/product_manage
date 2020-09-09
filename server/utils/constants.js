@@ -1,0 +1,19 @@
+module.exports = Object.freeze({
+  HTTP_CODE: {
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    FORBIDDEN: 403,
+    NOT_FOUND: 404,
+    INTERNAL_SERVER_ERROR: 500,
+    SERVICE_BUSY: 503
+  },
+  CUSTOM_CODE: {
+    SUCCESS: 0, // 成功
+    ACCOUNT_TO_BE_ACTIVATED: 1001, // 账号未激活
+    ACCOUNT_DISABLED: 1002, // 账号已禁用
+    ACCOUNT_NOT_EXISTS: 1003, // 账号不存在
+    ACCOUNT_ALREADY_EXISTS: 1004, // 账号已存在
+    INCORRECT_PASSWORD: 1005, // 错误的密码
+    SERVER_EXCEPTION: 50000 // 服务器异常
+  }
+})
