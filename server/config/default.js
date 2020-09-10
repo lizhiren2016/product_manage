@@ -1,5 +1,5 @@
 const ENV = 'production'
-// const ENV = 'development';
+// const ENV = 'development'
 
 const config = {
   // 启动端口
@@ -9,8 +9,8 @@ const config = {
   database: ENV === 'production' ? {
     DATABASE: 'product_manage',
     USERNAME: 'root',
-    PASSWORD: 'miGgvEFce4+_',
-    PORT: 3333,
+    PASSWORD: '123456',
+    PORT: 3306,
     HOST: 'localhost'
   } : {
     DATABASE: 'product_manage',

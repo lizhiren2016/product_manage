@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import axios from 'axios'
-// import store from '@/store'
+import store from '@/store'
 import router from '@/router'
 import { TOKEN_NAME } from '@/config/constants'
 
@@ -11,7 +11,7 @@ if (window.location.hostname.indexOf('localhost') > -1) {
   baseURL = 'http://localhost:3000/api'
 } else {
   // 线上url
-  baseURL = 'http://' + window.location.hostname + '/api'
+  baseURL = 'http://' + window.location.hostname + ':3000' + '/api'
 }
 
 axios.defaults.baseURL = baseURL
@@ -43,7 +43,7 @@ function (error) {
     switch (error.response.status) {
       case 401 :
         // 返回 401 (未授权) 清除 token 并跳转到登录页面
-        // store.commit('LOGOUT')
+        store.commit('LOGOUT')
         router.replace({
           path: '/login',
           query: {
