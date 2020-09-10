@@ -7,9 +7,9 @@ const config = {
   secret: 'secret_EF_912ijUI*3@23G92HYipYU*&%!#$$2452', // jwt secret
   // 数据库配置
   database: ENV === 'production' ? {
-    DATABASE: 'ecoflow_production',
-    USERNAME: 'eco_view',
-    PASSWORD: 'e9af3f7a4c6d48a8944afaf72a109c30',
+    DATABASE: 'product_manage',
+    USERNAME: 'root',
+    PASSWORD: 'miGgvEFce4+_',
     PORT: 3333,
     HOST: 'localhost'
   } : {
