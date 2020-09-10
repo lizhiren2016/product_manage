@@ -20,7 +20,8 @@ const sessionMysqlConfig = {
   user: config.database.USERNAME,
   password: config.database.PASSWORD,
   database: config.database.DATABASE,
-  host: config.database.HOST
+  host: config.database.HOST,
+  port: config.database.PORT
 }
 
 // 配置session中间件

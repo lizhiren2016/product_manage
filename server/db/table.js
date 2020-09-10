@@ -14,7 +14,7 @@ let users =
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;`
 
 let product =
-`CREATE TABLE IF NOT EXISTS product_sn(
+`CREATE TABLE IF NOT EXISTS products(
     sn VARCHAR(16) NOT NULL UNIQUE COMMENT 'sn',
     product INT(10) unsigned NOT NULL,
     app_version VARCHAR(16) DEFAULT NULL,
