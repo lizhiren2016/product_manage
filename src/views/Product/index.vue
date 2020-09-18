@@ -127,7 +127,15 @@ export default {
         {
           value: 9,
           label: 'R600_PRO_KIT'
-        }
+        },
+        {
+          value: 12,
+          label: 'RIVER600_PRO_18650'
+        },
+        {
+          value: 13,
+          label: 'Delta_PRO'
+        },
       ]
     }
   },
