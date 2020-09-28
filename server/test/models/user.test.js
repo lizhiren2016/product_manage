@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-var userModel = require('../../db/models/user')
+var userModel = require('../../db/mysql/models/user')
 
 let accont = 'admin@ef.cn'
 

@@ -18,7 +18,8 @@ const config = {
     PASSWORD: '123456',
     PORT: 3306,
     HOST: 'localhost'
-  }
+  },
+  uploadDir: 'D:/product_manage/upload'
 }
 
 module.exports = config

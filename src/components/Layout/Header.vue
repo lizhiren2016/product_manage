@@ -16,7 +16,7 @@
         <!-- 消息中心 -->
         <div class="btn-bell">
           <el-tooltip effect="dark" content="消息中心" placement="bottom">
-            <router-link to="/">
+            <router-link to="/home">
               <i class="el-icon-bell"></i>
             </router-link>
           </el-tooltip>

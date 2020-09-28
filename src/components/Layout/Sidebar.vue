@@ -61,7 +61,7 @@ export default {
       items: [
         {
           icon: 'el-icon-lx-home',
-          index: '/',
+          index: '/home',
           title: '首页'
         },
         {
@@ -83,8 +83,35 @@ export default {
           subs: [
             {
               icon: 'el-icon-lx-sort',
+              index: 'devices',
+              title: 'SN管理'
+            },
+            {
+              icon: 'el-icon-lx-hot',
               index: 'products',
-              title: '产品列表'
+              title: '产品发布'
+            }
+          ]
+        },
+        {
+          icon: 'el-icon-coin',
+          index: 'tests',
+          title: '测试管理',
+          subs: [
+            {
+              icon: 'el-icon-tickets',
+              index: 'test_records',
+              title: '测试记录管理'
+            },
+            {
+              icon: 'el-icon-set-up',
+              index: 'factorys',
+              title: '工厂管理'
+            },
+            {
+              icon: 'el-icon-lx-people',
+              index: 'stations',
+              title: '工位管理'
             }
           ]
         }

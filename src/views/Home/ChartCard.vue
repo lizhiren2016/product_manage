@@ -45,7 +45,7 @@
 
 <script>
 import Schart from 'vue-schart'
-import { countProductsApi } from '@/config/api'
+import { countDevicesApi } from '@/config/api'
 import { SUCCESS_CODE } from '@/config/constants'
 
 export default {
@@ -108,7 +108,7 @@ export default {
       this.R600_MAX.labels = []
       this.R600_MAX.datasets = []
       this.$axios
-        .get(countProductsApi + `?scope=${scope}&product=5`)
+        .get(countDevicesApi + `?scope=${scope}&product=5`)
         .then((res) => {
           const { data, code, message } = res.data
           if (code !== SUCCESS_CODE) {
@@ -139,7 +139,7 @@ export default {
       this.R600_PRO.labels = []
       this.R600_PRO.datasets = []
       this.$axios
-        .get(countProductsApi + `?scope=${scope}&product=7`)
+        .get(countDevicesApi + `?scope=${scope}&product=7`)
         .then((res) => {
           const { data, code, message } = res.data
           if (code !== SUCCESS_CODE) {
@@ -170,7 +170,7 @@ export default {
       this.R600_PRO_1500.labels = []
       this.R600_PRO_1500.datasets = []
       this.$axios
-        .get(countProductsApi + `?scope=${scope}&product=8`)
+        .get(countDevicesApi + `?scope=${scope}&product=8`)
         .then((res) => {
           const { data, code, message } = res.data
           if (code !== SUCCESS_CODE) {
@@ -201,7 +201,7 @@ export default {
       this.R600_PRO_KIT.labels = []
       this.R600_PRO_KIT.datasets = []
       this.$axios
-        .get(countProductsApi + `?scope=${scope}&product=9`)
+        .get(countDevicesApi + `?scope=${scope}&product=9`)
         .then((res) => {
           const { data, code, message } = res.data
           if (code !== SUCCESS_CODE) {

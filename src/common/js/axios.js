@@ -2,19 +2,10 @@ import Vue from 'vue'
 import axios from 'axios'
 import store from '@/store'
 import router from '@/router'
-import { TOKEN_NAME } from '@/config/constants'
+import { TOKEN_NAME, API_BASE_URL } from '@/config/constants'
 
-let baseURL
 axios.defaults.timeout = 10000
-if (window.location.hostname.indexOf('localhost') > -1) {
-  // 本地调试用url
-  baseURL = 'http://localhost:3000/api'
-} else {
-  // 线上url
-  baseURL = 'http://' + window.location.hostname + ':3000' + '/api'
-}
-
-axios.defaults.baseURL = baseURL
+axios.defaults.baseURL = API_BASE_URL
 
 // 请求拦截器
 axios.interceptors.request.use(
@@ -62,27 +53,4 @@ function (error) {
   return Promise.reject(err)
 })
 
-//  封装Axios方法
-class Axios {
-  get (url, params = {}) {
-    return axios.get(url, { params })
-  }
-
-  post (url, data = {}) {
-    return axios.post(url, data)
-  }
-
-  delete (url, data = {}) {
-    return axios.delete(url, data)
-  }
-
-  patch (url, data = {}) {
-    return axios.patch(url, data)
-  }
-
-  put (url, data = {}) {
-    return axios.put(url, data)
-  }
-}
-
-Vue.prototype.$axios = new Axios()
+Vue.prototype.$axios = axios

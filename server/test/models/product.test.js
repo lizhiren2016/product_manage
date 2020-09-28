@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-var productModel = require('../../db/models/product')
+var productModel = require('../../db/mysql/models/product')
 
 let sn = 'D4JBZ5PC7030453'
 

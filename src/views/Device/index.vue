@@ -14,33 +14,20 @@
           <el-col :span="12">
             <refresh-button :loading="loading" @click="getData" />
             <el-button
+              icon="el-icon-download"
               type="primary"
+              @click="exportExcel"
               class="mr10"
-              @click="handleDialog"
-            >新增</el-button>
+            >导出Excel</el-button>
             <el-select
               class="mr10"
-              v-model="typeId"
+              v-model="productId"
               filterable
-              placeholder="产品类型"
-              @change="(val)=>handleChangeSelect(val, 'type')"
+              placeholder="请选择"
+              @change="handleChangeSelect"
             >
               <el-option
-                v-for="item in typeOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></el-option>
-            </el-select>
-            <el-select
-              class="mr10"
-              v-model="releaseId"
-              filterable
-              placeholder="发布版本"
-              @change="(val)=>handleChangeSelect(val, 'release')"
-            >
-              <el-option
-                v-for="item in releaseOptions"
+                v-for="item in options"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -62,7 +49,7 @@
       </div>
 
       <el-table
-        :data="tableData"
+        :data="data"
         stripe
         border
         fit
@@ -73,26 +60,22 @@
         element-loading-spinner="el-icon-loading"
         element-loading-background="rgba(0, 0, 0, 0.8)"
         show-overflow-tooltip
+        @selection-change="handleSelectionChange"
       >
-        <el-table-column prop="version" label="版本号" align="center" width="100" />
-        <el-table-column prop="name" label="名称" align="center" width="300" />
-        <el-table-column prop="type" label="类型" align="center" width="150">
+        <el-table-column type="selection" width="40" />
+        <el-table-column prop="sn" label="sn" align="center" />
+        <el-table-column prop="app_version" label="app_version" align="center" />
+        <el-table-column prop="pd_app" label="pd_app" align="center" />
+        <el-table-column prop="inv_app" label="inv_app" align="center" />
+        <el-table-column prop="bms_m_app" label="bms_m_app" align="center" />
+        <el-table-column prop="bms_s_app" label="bms_s_app" align="center" />
+        <el-table-column prop="cpuid" label="cpuid" align="center" width="300" />
+        <el-table-column prop="timestamp" label="timestamp" align="center">
           <template slot-scope="scope">
-            {{ scope.row.type | typeFormat }}
+            <span>{{ scope.row.timestamp | dateFormat }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="release_version" label="发布版" align="center" width="120">
-          <template slot-scope="scope">
-            {{ scope.row.release_version | releaseFormat }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="node" label="简介" align="center" />
-        <el-table-column prop="timestamp" label="创建时间" align="center" width="180">
-          <template slot-scope="scope">
-            {{ scope.row.timestamp | dateFormat }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="operation" label="操作" align="center" width="250">
+        <el-table-column prop="operation" label="操作" align="center">
           <template slot-scope="scope">
             <el-button
               type="danger"
@@ -104,35 +87,18 @@
         </el-table-column>
       </el-table>
     </div>
-
-    <create
-      @close="handleDialog"
-      @refresh="getData"
-      :visible="dialogVisible"
-    />
-
   </div>
 </template>
 
 <script>
-import Create from './Create'
 import { SUCCESS_CODE } from '@/config/constants'
-import { productsApi } from '@/config/api'
+import { devicesApi } from '@/config/api'
 
 export default {
-  name: 'products',
-  components: {
-    Create
-  },
+  name: 'devices',
   filters: {
     dateFormat (val) {
       return new Date(val).Format('yyyy-MM-dd hh:mm:ss')
-    },
-    typeFormat (val) {
-      return val === 1 ? '调试工具' : val === 2 ? '测试工具' : val === 3 ? '生产工具' : val === 4 ? 'Android APK' : '无效类型'
-    },
-    releaseFormat (val) {
-      return val === 1 ? 'Release' : val === 2 ? 'Debug' : ''
     }
   },
   data () {
@@ -143,49 +109,47 @@ export default {
       query: '',
       tableData: [],
       tableDataCount: 0,
-      typeId: 0,
-      releaseId: 0,
-      typeOptions: [
+      multipleSelection: [],
+      productId: 0,
+      options: [
         {
           value: 0,
-          label: '请选择分类'
+          label: '请选择类型'
         },
         {
-          value: 1,
-          label: '调试工具'
+          value: 5,
+          label: 'R600_MAX'
         },
         {
-          value: 2,
-          label: '测试工具'
+          value: 7,
+          label: 'R600_PRO'
         },
         {
-          value: 3,
-          label: '生产工具'
+          value: 8,
+          label: 'R600_PRO_1500'
         },
         {
-          value: 4,
-          label: 'Android APK'
+          value: 9,
+          label: 'R600_PRO_KIT'
+        },
+        {
+          value: 12,
+          label: 'RIVER600_PRO_18650'
+        },
+        {
+          value: 13,
+          label: 'Delta_PRO'
         }
-      ],
-      releaseOptions: [
-        {
-          value: 0,
-          label: '请选择版本'
-        },
-        {
-          value: 1,
-          label: 'Release'
-        },
-        {
-          value: 2,
-          label: 'Debug'
-        }
-      ],
-      dialogVisible: false
+      ]
     }
   },
   mounted () {
     this.getData()
+  },
+  computed: {
+    data () {
+      return this.tableData
+    }
   },
   methods: {
     // 搜索
@@ -197,10 +161,10 @@ export default {
       this.loading = true
       this.$axios
         .get(
-          productsApi +
+          devicesApi +
             `?query=${this.query}&limit=${this.pageSize}&offset=${
               this.pageNum - 1
-            }&type=${this.typeId}&release=${this.releaseId}`
+            }&product=${this.productId}`
         )
         .then((res) => {
           const { data, message, code } = res.data
@@ -237,7 +201,7 @@ export default {
       )
         .then(({ value }) => {
           this.$axios
-            .delete(productsApi + `/${rowData.id}`)
+            .delete(devicesApi + `/${rowData.sn}`)
             .then((res) => {
               const { code, message } = res.data
               if (code !== SUCCESS_CODE) {
@@ -254,13 +218,37 @@ export default {
           this.$message('取消输入')
         })
     },
-    handleChangeSelect (val, fileds) {
-      if (fileds === 'type') {
-        this.typeId = val
-      } else {
-        this.releaseId = val
-      }
+    // 导出的方法
+    exportExcel () {
+      require.ensure([], () => {
+        const { exportJsonToExcel } = require('../../vendor/Export2Excel')
+        const tHeader = [
+          'sn',
+          'app_version',
+          'pd_app',
+          'inv_app',
+          'bms_m_app',
+          'bms_s_app',
+          'cpuid',
+          'timestamp'
+        ]
+        // 上面设置Excel的表格第一行的标题
+        const filterVal = tHeader
+        // 上面的是对象的属性
+        const list = this.multipleSelection // 把data里的tableData存到list
+        const data = this.formatJson(filterVal, list)
+        exportJsonToExcel(tHeader, data, '产品列表')
+      })
+    },
+    handleChangeSelect (val) {
+      this.productId = val
       this.getData()
+    },
+    handleSelectionChange (val) {
+      this.multipleSelection = val
+    },
+    formatJson (filterVal, jsonData) {
+      return jsonData.map((v) => filterVal.map((j) => v[j]))
     },
     handleSizeChange (val) {
       this.pageNum = 1
@@ -270,9 +258,6 @@ export default {
     handleCurrentChange (val) {
       this.pageNum = val
       this.getData()
-    },
-    handleDialog () {
-      this.dialogVisible = !this.dialogVisible
     }
   }
 }
@@ -292,6 +277,9 @@ export default {
 }
 ::v-deep .jv-container .jv-code {
   padding: 0px;
+}
+.margin-left {
+  margin-left: 10px;
 }
 .el-select {
   width: 150px;

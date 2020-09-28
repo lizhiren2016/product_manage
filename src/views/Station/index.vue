@@ -4,7 +4,7 @@
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>
           <i class="el-icon-lx-cascades"></i>
-          用户列表
+          工位管理
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -30,46 +30,35 @@
       </div>
 
       <el-table
-        :data="data"
+        :data="tableData"
         stripe
         border
         fit
         highlight-current-row
         class="table"
         style="width: 100%"
+        max-height="250"
         element-loading-text="拼命加载中..."
         element-loading-spinner="el-icon-loading"
         element-loading-background="rgba(0, 0, 0, 0.8)"
         @cell-click="onCellClicked"
         show-overflow-tooltip
       >
-        <el-table-column prop="account" label="账号" align="center" />
-        <el-table-column prop="name" label="姓名" align="center" />
-        <el-table-column prop="state" label="账号状态" align="center">
+        <el-table-column prop="stationId" label="工位号" align="center" />
+        <el-table-column prop="name" label="工号名称" align="center" />
+        <el-table-column prop="remark" label="工号概要" align="center" />
+        <el-table-column prop="createdAt" label="创建时间" align="center">
           <template slot-scope="scope">
-            {{
-            scope.row.state | stateFormat(that)
-            }}
+            <span>{{ scope.row.createdAt | dateFormat }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="timestamp" label="创建时间" align="center">
+        <el-table-column prop="operation" label="操作" align="center" width="200">
           <template slot-scope="scope">
-            <span>{{ scope.row.timestamp | dateFormat }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="operation" label="操作" align="center" width="300">
-          <template slot-scope="scope">
-            <el-button
-              :type="scope.row.state === 0 ? 'info' : 'success'"
-              size="mini"
-              icon="el-icon-coordinate"
-              @click="activateUser(scope.row)"
-            >{{scope.row.state === 0 ? '禁用' : '激活'}}</el-button>
             <el-button
               type="danger"
               size="mini"
               icon="el-icon-delete"
-              @click="deleteUser(scope.row)"
+              @click="deleteStation(scope.row)"
             >删除</el-button>
           </template>
         </el-table-column>
@@ -89,24 +78,20 @@
 <script>
 import CreateOrUpdate from './CreateOrUpdate'
 import { SUCCESS_CODE } from '@/config/constants'
-import { usersApi } from '@/config/api'
+import { stationsApi } from '@/config/api'
 
 export default {
-  name: 'users',
+  name: 'station',
   components: {
     CreateOrUpdate
   },
   filters: {
     dateFormat (val) {
       return new Date(val).Format('yyyy-MM-dd hh:mm:ss')
-    },
-    stateFormat (val, that) {
-      return val === 0 ? '正常' : val === 1 ? '待激活' : val === 2 ? '被禁用' : '异常'
     }
   },
   data () {
     return {
-      that: this,
       loading: false,
       pageNum: 1,
       pageSize: 20,
@@ -115,24 +100,15 @@ export default {
       tableDataCount: 0,
       dialogType: 1, // 1：创建 0：更新
       form: {
-        account: '',
-        password: '',
+        stationId: '',
         name: '',
-        phone: '',
-        country: '',
-        city: '',
-        address: ''
+        remark: ''
       },
       dialogVisible: false
     }
   },
   mounted () {
     this.getData()
-  },
-  computed: {
-    data () {
-      return this.tableData
-    }
   },
   methods: {
     // 搜索
@@ -143,14 +119,14 @@ export default {
     getData () {
       this.loading = true
       this.$axios
-        .get(usersApi + `?query=${this.query}&limit=${this.pageSize}&offset=${this.pageNum - 1}`)
+        .get(stationsApi + `?query=${this.query}&limit=${this.pageSize}&offset=${this.pageNum - 1}`)
         .then(res => {
           const { data, message, code } = res.data
           if (code !== SUCCESS_CODE) {
             return this.$message.error(message)
           }
           if (data) {
-            this.tableData = data.users
+            this.tableData = data.stations
             this.tableDataCount = data.total
           }
         })
@@ -161,10 +137,8 @@ export default {
           this.loading = false
         })
     },
-    // 账号激活
-    activateUser (rowData) {
-      const { state, account } = rowData
-      this.$confirm(state === 1 ? '此操作将激活当前用户, 是否继续?' : '此操作将禁用当前用户, 是否继续?', '提示', {
+    deleteStation (rowData) {
+      this.$confirm('此操作将删除当前工位, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         showClose: false,
@@ -172,42 +146,30 @@ export default {
       })
         .then(() => {
           this.$axios
-            .patch(usersApi, { account, state: state === 0 ? 2 : 0 })
+            .delete(stationsApi + `/${rowData.stationId}`)
             .then(res => {
-              const { code, message } = res.data
+              const { message, code } = res.data
               if (code !== SUCCESS_CODE) {
                 return this.$message.error(message)
               }
               this.$message.success(message)
               this.getData()
             })
-            .catch(err => {
-              this.$message.error(err.message)
+            .catch(error => {
+              this.$message.error(error.message)
             })
         })
         .catch(() => {
           this.$message.info('已取消')
         })
     },
-    handleSizeChange (val) {
-      this.pageNum = 1
-      this.pageSize = val
-      this.getData()
-    },
-    handleCurrentChange (val) {
-      this.pageNum = val
-      this.getData()
-    },
     handleOpenDialog (rowData) {
       if (rowData) {
         this.dialogType = 0
         this.form = {
-          account: rowData.account,
+          stationId: rowData.stationId,
           name: rowData.name,
-          phone: rowData.phone,
-          country: rowData.country,
-          city: rowData.city,
-          address: rowData.address
+          remark: rowData.remark
         }
       } else {
         this.dialogType = 1
@@ -217,41 +179,19 @@ export default {
     handleCloseDialog () {
       this.dialogVisible = false
       this.form = {
-        account: '',
-        password: '',
+        stationId: '',
         name: '',
-        phone: '',
-        country: '',
-        city: '',
-        address: ''
+        remark: ''
       }
     },
-    deleteUser (rowData) {
-      this.$confirm('此操作将删除当前用户, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        showClose: false,
-        type: 'warning'
-      })
-        .then(() => {
-          const { account } = rowData
-          this.$axios
-            .delete(usersApi, { data: { account } })
-            .then(res => {
-              const { code, message } = res.data
-              if (code !== SUCCESS_CODE) {
-                return this.$message.error(message)
-              }
-              this.$message.success(message)
-              this.getData()
-            })
-            .catch(err => {
-              this.$message.error(err.message)
-            })
-        })
-        .catch(() => {
-          this.$message.info('已取消')
-        })
+    handleSizeChange (val) {
+      this.pageNum = 1
+      this.pageSize = val
+      this.getData()
+    },
+    handleCurrentChange (val) {
+      this.pageNum = val
+      this.getData()
     },
     onCellClicked (row, column, cell, event) {
       if (column.property !== 'operation') {

@@ -2,7 +2,7 @@
 node_modules
 /dist
 /logs
-
+/public/apidoc/
 # local env files
 .env.local
 .env.*.local

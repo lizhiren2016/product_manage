@@ -7,6 +7,12 @@ import Login from './views/Login'
 import Register from './views/Register'
 import User from './views/User'
 import Product from './views/Product'
+import Device from './views/Device'
+import TestRecord from './views/TestRecord'
+import Station from './views/Station'
+import Factory from './views/Factory'
+import Download from './views/Download'
+
 Vue.use(Router)
 
 let router = new Router({
@@ -15,23 +21,69 @@ let router = new Router({
   routes: [
     {
       path: '/',
-      name: 'main',
+      name: 'download',
+      component: Download
+    },
+    {
+      path: '/home',
+      name: 'home',
       component: Main,
       children: [
         {
           path: '/',
           component: Home,
           meta: { title: '首页', requireAuth: true }
-        },
+        }
+      ]
+    },
+    {
+      path: '/user',
+      name: 'user',
+      component: Main,
+      children: [
         {
           path: '/users',
           component: User,
           meta: { title: '用户列表', requireAuth: true }
+        }
+      ]
+    },
+    {
+      path: '/product',
+      name: 'product',
+      component: Main,
+      children: [
+        {
+          path: '/devices',
+          component: Device,
+          meta: { title: 'SN列表', requireAuth: true }
         },
         {
           path: '/products',
           component: Product,
           meta: { title: '产品列表', requireAuth: true }
+        }
+      ]
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: Main,
+      children: [
+        {
+          path: '/test_records',
+          component: TestRecord,
+          meta: { title: '测试记录管理', requireAuth: true }
+        },
+        {
+          path: '/factorys',
+          component: Factory,
+          meta: { title: '工厂管理', requireAuth: true }
+        },
+        {
+          path: '/stations',
+          component: Station,
+          meta: { title: '工位管理', requireAuth: true }
         }
       ]
     },

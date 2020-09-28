@@ -101,7 +101,7 @@ export default {
                 localStorage.setItem('account', this.form.account)
                 localStorage.setItem('password', Base64.encode(this.form.password))
                 localStorage.setItem('name', data.name)
-                this.$router.push('/')
+                this.$router.push('/home')
                 this.$message.success(message)
               } else {
                 this.$message.error('登陆失败')

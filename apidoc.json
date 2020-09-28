@@ -1,0 +1,13 @@
+{
+    "name": "product_manage",
+    "version": "1.0.0",
+    "description": "API文档",
+    "title": "product_manage API",
+    "url": "http://172.30.96.1:3000",
+    "sampleUrl": "http://172.30.96.1:3000",
+    "forceLanguage": "zh-cn",
+    "template": {
+        "withCompare": true,
+        "withGenerator": true
+    }
+}

@@ -11,7 +11,8 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test": "mocha server/test/**/*.js --exit",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "apidoc": "apidoc -i server/routers -o public/apidoc"
   },
   "dependencies": {
     "@hapi/joi": "15.1.1",
@@ -38,12 +39,14 @@
     "koa-session-minimal": "^3.0.4",
     "koa-static": "^4.0.0",
     "koa-static-cache": "^5.1.1",
+    "koa-static-server": "^1.5.2",
     "koa-views": "^6.0.2",
     "koa2-cors": "^2.0.6",
     "koa2-validation": "^1.1.0",
     "log4js": "^6.3.0",
     "md5": "^2.2.1",
     "moment": "^2.18.1",
+    "mongoose": "^5.10.6",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.4",
     "path": "^0.12.7",
@@ -70,6 +73,7 @@
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
     "script-loader": "^0.7.2",
+    "apidoc": "^0.25.0",
     "vue-template-compiler": "^2.5.17"
   }
 }

@@ -73,7 +73,6 @@ export default {
       }
     }
     return {
-      source: 0,
       rules: {
         account: [
           {
@@ -109,7 +108,7 @@ export default {
         ],
         country: [
           {
-            required: false,
+            required: true,
             message: '请选择国家',
             trigger: 'blur'
           }
@@ -137,7 +136,7 @@ export default {
     create () {
       this.$refs.form.validate(valid => {
         if (valid) {
-          this.formData.password = Base64.encode(this.formData.checkPass)
+          this.formData.password = Base64.encode(this.formData.password)
           this.$axios
             .post(usersApi, this.formData)
             .then(res => {

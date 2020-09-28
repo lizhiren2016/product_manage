@@ -3,14 +3,16 @@ const koaJwt = require('koa-jwt')
 const jwt = require('jsonwebtoken')
 const bodyParser = require('koa-bodyparser')
 const session = require('koa-session-minimal')
+const serve = require('koa-static-server')
 const MysqlStore = require('koa-mysql-session')
 const cors = require('koa2-cors')
-const mysql = require('./db/mysql')
 const config = require('./config/default.js')
 const { CustomError, HttpError } = require('./utils/customError')
 const { format } = require('./utils/response')
 const logger = require('./utils/logger')
 const app = new Koa()
+require('./db/mongodb/mongodb')
+const mysql = require('./db/mysql/mysql')
 
 // 建表
 mysql.createTable()
@@ -39,12 +41,15 @@ app.use(bodyParser({
   formLimit: '1mb'
 }))
 
+app.use(serve({ rootDir: 'public/apidoc', rootPath: '/apidoc', index: 'index.html' }))
+app.use(serve({ rootDir: config.uploadDir + '/files', rootPath: '/files' }))
+
 // 路由权限控制 除了path里的路径不需要验证token 其他都要
 app.use(
   koaJwt({
     secret: config.secret
   }).unless({
-    path: ['/', '/api/v1/login', '/api/v1/register']
+    path: ['/', '/api/v1/login', '/api/v1/register', '/api/v1/testRecords/history', '/api/v1/testRecords/info', '/api/v1/testRecords', '/api/v1/products']
   })
 )
 
@@ -102,9 +107,13 @@ app.use(async (ctx, next) => {
 })
 
 //  路由
-app.use(require('./routers/index.js').routes())
-app.use(require('./routers/user.js').routes())
-app.use(require('./routers/product.js').routes())
+app.use(require('./routers/index').routes())
+app.use(require('./routers/user').routes())
+app.use(require('./routers/product').routes())
+app.use(require('./routers/device').routes())
+app.use(require('./routers/testRecord').routes())
+app.use(require('./routers/station').routes())
+app.use(require('./routers/factory').routes())
 
 app.listen(config.port)
 

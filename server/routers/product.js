@@ -4,8 +4,10 @@ const controller = require('../controller/product')
 
 router.get('/api/v1/products', validate(controller.v.getProducts), controller.getProducts)
 
-router.get('/api/v1/products/count', validate(controller.v.countProductByScope), controller.countProductByScope)
+router.post('/api/v1/products', controller.createProduct)
 
-router.delete('/api/v1/products', validate(controller.v.deleteProduct), controller.deleteProduct)
+router.put('/api/v1/products', validate(controller.v.updateProduct), controller.updateProduct)
+
+router.delete('/api/v1/products/:id', validate(controller.v.deleteProduct), controller.deleteProduct)
 
 module.exports = router

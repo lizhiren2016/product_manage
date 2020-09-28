@@ -1,4 +1,4 @@
-const userModel = require('../db/models/user')
+const userModel = require('../db/mysql/models/user')
 const Joi = require('@hapi/joi')
 const { encodePassword, signToken } = require('../utils/tools')
 const { CustomError } = require('../utils/customError')
