@@ -40,6 +40,16 @@ v.getProducts = {
   }
 }
 
+v.getDownloadList = {
+  query: {
+    limit: Joi.number().default(20),
+    offset: Joi.number().default(0),
+    query: Joi.string().default('').empty(''),
+    type: Joi.number().default(0),
+    release: Joi.number().default(0)
+  }
+}
+
 v.updateProduct = {
   body: {
     id: Joi.number().required(),
@@ -57,7 +67,34 @@ v.deleteProduct = {
   }
 }
 
+v.enableProduct = {
+  body: {
+    id: Joi.number().required(),
+    status: Joi.number().required()
+  }
+}
+
 // ------------------Context----------
+
+exports.enableProduct = async ctx => {
+  await productModel.enableProduct(ctx.request.body)
+    .then(res => {
+      ctx.body = new CustomError(constants.CUSTOM_CODE.SUCCESS)
+    }).catch((err) => {
+      logger.error(`enableProduct error ${err.message}`)
+      ctx.body = new CustomError(constants.CUSTOM_CODE.SERVER_EXCEPTION)
+    })
+}
+
+exports.getDownloadList = async ctx => {
+  await productModel.getDownloadList(ctx.query)
+    .then(res => {
+      ctx.body = new CustomError(constants.CUSTOM_CODE.SUCCESS, { products: res[0], total: res[1][0]['FOUND_ROWS()'] })
+    }).catch((err) => {
+      logger.error(`getProducts error ${err.message}`)
+      ctx.body = new CustomError(constants.CUSTOM_CODE.SERVER_EXCEPTION)
+    })
+}
 
 exports.getProducts = async ctx => {
   await productModel.getProducts(ctx.query)

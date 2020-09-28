@@ -17,8 +17,8 @@ let product =
   `CREATE TABLE IF NOT EXISTS products(
     id INT unsigned NOT NULL AUTO_INCREMENT,
     type INT(5) NOT NULL COMMENT '类型 1：调试工具 2：测试工具 3：生产工具 4：Android APK',
-    version varchar(16) NOT NULL COMMENT '版本',
-    name varchar(16) NOT NULL COMMENT '名称',
+    version varchar(255) NOT NULL COMMENT '版本',
+    name varchar(255) NOT NULL COMMENT '名称',
     note varchar(255) DEFAULT NULL COMMENT '简介',
     hash varchar(255) DEFAULT NULL COMMENT '文件hash',
     release_version INT(5) DEFAULT 1 COMMENT '1：release 2：debug',

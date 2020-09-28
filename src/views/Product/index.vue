@@ -69,6 +69,7 @@
         highlight-current-row
         class="table"
         style="width: 100%"
+        :cell-style="cellStyle"
         element-loading-text="拼命加载中..."
         element-loading-spinner="el-icon-loading"
         element-loading-background="rgba(0, 0, 0, 0.8)"
@@ -94,6 +95,12 @@
         </el-table-column>
         <el-table-column prop="operation" label="操作" align="center" width="250">
           <template slot-scope="scope">
+             <el-button
+              :type="scope.row.status ? 'info' : 'success'"
+              size="mini"
+              icon="el-icon-position"
+              @click="enableProduct(scope.row)"
+            >{{scope.row.status | statusFormat(that)}}</el-button>
             <el-button
               type="danger"
               size="mini"
@@ -133,10 +140,14 @@ export default {
     },
     releaseFormat (val) {
       return val === 1 ? 'Release' : val === 2 ? 'Debug' : ''
+    },
+    statusFormat (val, that) {
+      return val ? '禁用' : '启用'
     }
   },
   data () {
     return {
+      that: this,
       loading: false,
       pageNum: 1,
       pageSize: 20,
@@ -219,6 +230,36 @@ export default {
           this.loading = false
         })
     },
+    // 启用/禁用
+    enableProduct (row) {
+      this.$confirm(row.status ? '此操作将执行禁用, 是否继续?' : '此操作将执行启用, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        showClose: false,
+        type: 'warning'
+      })
+        .then(() => {
+          this.$axios
+            .patch(productsApi + '/enableProduct', {
+              id: row.id,
+              status: row.status ? 0 : 1
+            })
+            .then((res) => {
+              const { code, message } = res.data
+              if (code !== SUCCESS_CODE) {
+                return this.$message.error(message)
+              }
+              this.$message.success(message)
+              this.getData()
+            })
+            .catch((err) => {
+              this.$message.error(err.message)
+            })
+        })
+        .catch(() => {
+          this.$message.info(this.$t('1073'))
+        })
+    },
     deleteProduct (rowData) {
       this.$prompt(
         '请输入操作密码：ecoflow，该操作将执行删除',
@@ -273,6 +314,11 @@ export default {
     },
     handleDialog () {
       this.dialogVisible = !this.dialogVisible
+    },
+    cellStyle ({ row, column, rowIndex, columnIndex }) {
+      if (!row.status) {
+        return 'font-weight:bold;cursor:pointer;color:#C0C0C0'
+      }
     }
   }
 }

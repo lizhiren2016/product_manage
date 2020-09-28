@@ -49,7 +49,7 @@ app.use(
   koaJwt({
     secret: config.secret
   }).unless({
-    path: ['/', '/api/v1/login', '/api/v1/register', '/api/v1/testRecords/history', '/api/v1/testRecords/info', '/api/v1/testRecords', '/api/v1/products']
+    path: ['/', '/api/v1/login', '/api/v1/register', '/api/v1/testRecords/history', '/api/v1/testRecords/info', '/api/v1/testRecords', '/api/v1/products/downloadList']
   })
 )
 

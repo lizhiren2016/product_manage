@@ -92,7 +92,7 @@ export default {
       this.$axios
         .get(
           productsApi +
-            `?limit=${this.pageSize}&offset=${
+            `/downloadList?limit=${this.pageSize}&offset=${
               this.pageNum - 1
             }`
         )
