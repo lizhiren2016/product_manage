@@ -6,8 +6,9 @@
     "one": "./bin/one.js"
   },
   "scripts": {
-    "start": "concurrently \"npm run server\" \"npm run serve\"",
-    "server": "nodemon ./server/index.js",
+    "dev": "concurrently \"npm run server\" \"npm run serve\"",
+    "pro": "cross-env NODE_ENV=production nodemon ./server/index.js",
+    "server": "cross-env NODE_ENV=development nodemon ./server/index.js",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test": "mocha server/test/**/*.js --exit",
@@ -23,6 +24,7 @@
     "concurrently": "^5.3.0",
     "config-lite": "^2.0.0",
     "countup": "^1.8.2",
+    "cross-env": "^7.0.2",
     "crypto": "^1.0.1",
     "ejs": "^2.5.6",
     "element-ui": "^2.13.2",

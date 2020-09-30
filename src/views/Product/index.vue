@@ -75,16 +75,16 @@
         element-loading-background="rgba(0, 0, 0, 0.8)"
         show-overflow-tooltip
       >
-        <el-table-column prop="version" label="版本号" align="center" width="100" />
         <el-table-column prop="name" label="名称" align="center" width="300" />
+        <el-table-column prop="version" label="版本号" align="center" width="100" />
+        <el-table-column prop="size" label="大小" align="center" width="100">
+          <template slot-scope="scope">
+            {{ scope.row.size}}MB
+          </template>
+        </el-table-column>
         <el-table-column prop="type" label="类型" align="center" width="150">
           <template slot-scope="scope">
             {{ scope.row.type | typeFormat }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="release_version" label="发布版" align="center" width="120">
-          <template slot-scope="scope">
-            {{ scope.row.release_version | releaseFormat }}
           </template>
         </el-table-column>
         <el-table-column prop="node" label="简介" align="center" />
@@ -318,6 +318,10 @@ export default {
     cellStyle ({ row, column, rowIndex, columnIndex }) {
       if (!row.status) {
         return 'font-weight:bold;cursor:pointer;color:#C0C0C0'
+      } else {
+        if (column.property === 'name' || column.property === 'version') {
+          return 'font-weight:bold;cursor:pointer;'
+        }
       }
     }
   }

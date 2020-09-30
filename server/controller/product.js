@@ -139,8 +139,10 @@ exports.createProduct = async ctx => {
         if (version && name && type && release) {
           let filePath = ''
           let staticPath = ''
+          let fileSize = 0
           if (files && files.file) { // 文件处理
             filePath = files.file.path
+            fileSize = parseInt(files.file.size / 1024 / 1024)
             let fileExt = files.file.name.substring(files.file.name.lastIndexOf('.'))
             try {
               // 以当前账号对上传文件进行重命名
@@ -162,8 +164,6 @@ exports.createProduct = async ctx => {
                 staticPath = APK_BASE_STATIC_URL + fileName
                 targetFile = path.join(APK_UPLOAD_DIR, fileName)
               }
-              console.log(targetFile)
-              console.log(staticPath)
               // 移动并重命名文件
               fs.renameSync(filePath, targetFile)
             } catch (err) {
@@ -176,7 +176,7 @@ exports.createProduct = async ctx => {
           if (checkRes.length > 0) return reject(ctx.body = new CustomError(constants.CUSTOM_CODE.SERVER_EXCEPTION, null, '文件已存在，请不要重复上传'))
 
           // 创建
-          await productModel.createProduct([type, release, name, version, staticPath, files.file.hash, note])
+          await productModel.createProduct([type, release, name, version, staticPath, files.file.hash, note, fileSize])
             .then(res => {
               resolve(ctx.body = new CustomError(constants.CUSTOM_CODE.SUCCESS))
             }).catch((err) => {
@@ -193,11 +193,17 @@ exports.createProduct = async ctx => {
 
 exports.deleteProduct = async ctx => {
   const { id } = ctx.params
-  await productModel.deleteProduct(id)
-    .then(res => {
-      ctx.body = new CustomError(constants.CUSTOM_CODE.SUCCESS)
-    }).catch((err) => {
-      logger.error(`deleteProduct error ${err.message}`)
-      ctx.body = new CustomError(constants.CUSTOM_CODE.SERVER_EXCEPTION, null, err.message)
-    })
+  let res = await productModel.getProductById(id)
+  if (res.length > 0) {
+    await productModel.deleteProduct(id)
+      .then(doc => {
+        fs.unlinkSync(uploadDir + res[0].path)
+        ctx.body = new CustomError(constants.CUSTOM_CODE.SUCCESS)
+      }).catch((err) => {
+        logger.error(`deleteProduct error ${err.message}`)
+        ctx.body = new CustomError(constants.CUSTOM_CODE.SERVER_EXCEPTION, null, err.message)
+      })
+  } else {
+    ctx.body = new CustomError(constants.CUSTOM_CODE.PRODUCT_NOT_EXISTS)
+  }
 }

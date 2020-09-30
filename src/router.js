@@ -96,6 +96,30 @@ let router = new Router({
       path: '/register',
       component: Register,
       meta: { title: '注册页' }
+    },
+    {
+      path: '/401',
+      component: resolve => require(['./views/401.vue'], resolve),
+      meta: { title: '401' }
+    },
+    {
+      path: '/403',
+      component: resolve => require(['./views/403.vue'], resolve),
+      meta: { title: '403' }
+    },
+    {
+      path: '/404',
+      component: resolve => require(['./views/404.vue'], resolve),
+      meta: { title: '404' }
+    },
+    {
+      path: '/500',
+      component: resolve => require(['./views/500.vue'], resolve),
+      meta: { title: '500' }
+    },
+    {
+      path: '*',
+      redirect: '/404'
     }
   ]
 })

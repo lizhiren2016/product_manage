@@ -20,30 +20,34 @@
         highlight-current-row
         class="table"
         style="width: 100%"
+        :cell-style="cellStyle"
+        @cell-click="onCellClicked"
         element-loading-text="拼命加载中..."
         element-loading-spinner="el-icon-loading"
         element-loading-background="rgba(0, 0, 0, 0.8)"
         show-overflow-tooltip
       >
-        <el-table-column prop="version" label="版本号" align="center" width="100" />
         <el-table-column prop="name" label="名称" align="center" width="300" />
+        <el-table-column prop="version" label="版本号" align="center" width="100" />
+        <el-table-column prop="size" label="大小" align="center" width="100">
+          <template slot-scope="scope">
+            {{ scope.row.size}}MB
+          </template>
+        </el-table-column>
         <el-table-column prop="type" label="类型" align="center" width="150">
           <template slot-scope="scope">{{ scope.row.type | typeFormat }}</template>
         </el-table-column>
-        <el-table-column prop="release_version" label="发布版" align="center" width="120">
-          <template slot-scope="scope">{{ scope.row.release_version | releaseFormat }}</template>
-        </el-table-column>
-        <el-table-column prop="node" label="简介" align="center" />
+        <el-table-column prop="note" label="简介" align="center" />
         <el-table-column prop="timestamp" label="创建时间" align="center" width="180">
           <template slot-scope="scope">{{ scope.row.timestamp | dateFormat }}</template>
         </el-table-column>
-        <el-table-column prop="operation" label="操作" align="center" width="250">
+        <!-- <el-table-column prop="operation" label="操作" align="center" width="250">
           <template slot-scope="scope">
             <el-link target="_blank" type="primary" :href="baseUrl + scope.row.path" :underline="false">
               <el-button size="mini" type="primary">下载</el-button>
             </el-link>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
     </div>
   </div>
@@ -114,6 +118,16 @@ export default {
     },
     jump () {
       this.$router.push('/login')
+    },
+    onCellClicked (row, column, cell, event) {
+      if (column.property === 'name' || column.property === 'version') {
+        window.location.href = this.baseUrl + row.path
+      }
+    },
+    cellStyle ({ row, column, rowIndex, columnIndex }) {
+      if (column.property === 'name' || column.property === 'version') {
+        return 'font-weight:bold;cursor:pointer;'
+      }
     }
   }
 }

@@ -146,6 +146,13 @@ export default {
             message: '请上传文件',
             trigger: 'blur'
           }
+        ],
+        note: [
+          {
+            required: true,
+            message: '请输入简介',
+            trigger: 'blur'
+          }
         ]
       }
     }

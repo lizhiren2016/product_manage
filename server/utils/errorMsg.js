@@ -11,5 +11,6 @@ module.exports = Object.freeze({
   1003: 'account not exists',
   1004: 'account already exists',
   1005: 'incorrect password',
+  1006: 'product not exists',
   50000: 'server exception'
 })

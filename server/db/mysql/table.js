@@ -21,6 +21,7 @@ let product =
     name varchar(255) NOT NULL COMMENT '名称',
     note varchar(255) DEFAULT NULL COMMENT '简介',
     hash varchar(255) DEFAULT NULL COMMENT '文件hash',
+    size varchar(255) DEFAULT NULL COMMENT '文件大小',
     release_version INT(5) DEFAULT 1 COMMENT '1：release 2：debug',
     path varchar(255) DEFAULT NULL COMMENT '文件保存路径',
     status int DEFAULT '1' COMMENT '状态 0：禁用 1：启用',

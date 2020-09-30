@@ -13,7 +13,8 @@ module.exports = Object.freeze({
     ACCOUNT_DISABLED: 1002, // 账号已禁用
     ACCOUNT_NOT_EXISTS: 1003, // 账号不存在
     ACCOUNT_ALREADY_EXISTS: 1004, // 账号已存在
-    INCORRECT_PASSWORD: 1005, // 错误的密码
+    INCORRECT_PASSWORD: 1005, // 错误的密码,
+    PRODUCT_NOT_EXISTS: 1006, // 产品不存在
     SERVER_EXCEPTION: 50000 // 服务器异常
   }
 })

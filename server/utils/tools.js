@@ -6,6 +6,17 @@ const config = require('../config/default')
 
 const tokenExpires = { expiresIn: '30d' }
 
+// 验证jwt用户传过来的token
+exports.getUserInfo = (ctx) => {
+  try {
+    if (!ctx.request.header.authorization) return null
+    let token = ctx.request.header.authorization.slice(7)
+    return jwt.verify(token, config.secret)
+  } catch (err) {
+    return null
+  }
+}
+
 exports.encodePassword = (pass) => {
   let password = Buffer.from(pass, 'base64')
   const hmac = crypto.createHmac('sha1', 'moIHij9oU(*bik&^%&*imlYUTink$%E6fU#f278')

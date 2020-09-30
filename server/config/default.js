@@ -3,7 +3,7 @@ const ENV = 'production'
 
 const config = {
   // 启动端口
-  port: 8081,
+  port: 8087,
   secret: 'secret_EF_912ijUI*3@23G92HYipYU*&%!#$$2452', // jwt secret
   // 数据库配置
   database: ENV === 'production' ? {

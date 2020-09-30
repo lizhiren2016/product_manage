@@ -5,7 +5,7 @@ let execQuery = sql.execQuery
 // 获取商品列表
 exports.getProducts = (param) => {
   const { offset, limit, query, type, release } = param
-  let _sql = `SELECT SQL_CALC_FOUND_ROWS id,name,note,type,timestamp,release_version,version,path,status FROM products p WHERE CONCAT(p.version, p.name) LIKE "%${query}%"`
+  let _sql = `SELECT SQL_CALC_FOUND_ROWS id,name,note,type,timestamp,release_version,version,path,status,size FROM products p WHERE CONCAT(p.version, p.name) LIKE "%${query}%"`
   if (release) _sql += ` AND release_version = ${release}`
   if (type) _sql += ` AND type = ${type}`
   _sql += ` ORDER BY timestamp DESC LIMIT ${offset * limit},${limit};`
@@ -16,11 +16,16 @@ exports.getProducts = (param) => {
 // 获取下载列表
 exports.getDownloadList = (param) => {
   const { offset, limit, query, type, release } = param
-  let _sql = `SELECT SQL_CALC_FOUND_ROWS id,name,note,type,timestamp,release_version,version,path,status FROM products p WHERE CONCAT(p.version, p.name) LIKE "%${query}%" AND status`
+  let _sql = `SELECT SQL_CALC_FOUND_ROWS id,name,note,type,timestamp,release_version,version,path,status,size FROM products p WHERE CONCAT(p.version, p.name) LIKE "%${query}%" AND status`
   if (release) _sql += ` AND release_version = ${release}`
   if (type) _sql += ` AND type = ${type}`
   _sql += ` ORDER BY timestamp DESC LIMIT ${offset * limit},${limit};`
   _sql += `SELECT FOUND_ROWS();`
+  return execQuery(_sql)
+}
+
+exports.getProductById = (value) => {
+  let _sql = `SELECT path FROM products WHERE id="${value}"`
   return execQuery(_sql)
 }
 
@@ -31,7 +36,7 @@ exports.checktProductFileHash = (type, release, hash) => {
 
 // 新增商品
 exports.createProduct = (value) => {
-  let _sql = `INSERT INTO products set type=?,release_version=?,name=?,version=?,path=?,hash=?,note=?;`
+  let _sql = `INSERT INTO products set type=?,release_version=?,name=?,version=?,path=?,hash=?,note=?,size=?;`
   return execQuery(_sql, value)
 }
 
